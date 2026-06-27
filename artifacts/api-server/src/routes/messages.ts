@@ -7,6 +7,16 @@ import { StartConversationBody, SendMessageBody } from "@workspace/api-zod";
 
 const router = Router();
 
+async function isParticipant(conversationId: number, userId: number): Promise<boolean> {
+  const [participant] = await db.select().from(conversationParticipantsTable)
+    .where(and(
+      eq(conversationParticipantsTable.conversationId, conversationId),
+      eq(conversationParticipantsTable.userId, userId)
+    ))
+    .limit(1);
+  return !!participant;
+}
+
 async function buildConversationResponse(conv: typeof conversationsTable.$inferSelect, myUserId: number) {
   const participants = await db.select().from(conversationParticipantsTable)
     .where(eq(conversationParticipantsTable.conversationId, conv.id));
@@ -75,6 +85,12 @@ router.get("/:id/messages", requireAuth, async (req, res) => {
   const id = parseInt(req.params["id"] as string);
   if (isNaN(id)) { res.status(400).json({ error: "Invalid ID" }); return; }
 
+  const myId = req.session!.userId!;
+  if (!(await isParticipant(id, myId))) {
+    res.status(403).json({ error: "Forbidden: not a participant in this conversation" });
+    return;
+  }
+
   const messages = await db.select().from(messagesTable)
     .where(eq(messagesTable.conversationId, id))
     .orderBy(messagesTable.createdAt);
@@ -108,6 +124,11 @@ router.post("/:id/messages", requireAuth, async (req, res) => {
   if (!parsed.success) { res.status(400).json({ error: "Invalid input" }); return; }
 
   const myId = req.session!.userId!;
+  if (!(await isParticipant(id, myId))) {
+    res.status(403).json({ error: "Forbidden: not a participant in this conversation" });
+    return;
+  }
+
   const [msg] = await db.insert(messagesTable).values({
     conversationId: id,
     senderId: myId,

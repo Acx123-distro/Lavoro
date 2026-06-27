@@ -111,6 +111,27 @@ router.delete("/:id", requireAuth, async (req, res) => {
 router.get("/:jobId/applications", requireAuth, async (req, res) => {
   const jobId = parseInt(req.params["jobId"] as string);
   if (isNaN(jobId)) { res.status(400).json({ error: "Invalid ID" }); return; }
+
+  const [job] = await db.select().from(jobsTable).where(eq(jobsTable.id, jobId)).limit(1);
+  if (!job) { res.status(404).json({ error: "Job not found" }); return; }
+
+  const userId = req.session!.userId!;
+  const isJobOwner = job.clientId === userId;
+  const isAdmin = req.session!.role === "admin";
+
+  if (!isJobOwner && !isAdmin) {
+    const [userApp] = await db.select().from(applicationsTable)
+      .where(and(eq(applicationsTable.jobId, jobId), eq(applicationsTable.freelancerId, userId)))
+      .limit(1);
+    if (!userApp) {
+      res.status(403).json({ error: "Forbidden: only job owner or applicants can view applications" });
+      return;
+    }
+    const built = await buildApplicationResponse(userApp);
+    res.json(built ? [built] : []);
+    return;
+  }
+
   const apps = await db.select().from(applicationsTable).where(eq(applicationsTable.jobId, jobId));
   const built = await Promise.all(apps.map(buildApplicationResponse));
   res.json(built.filter(Boolean));
@@ -122,8 +143,18 @@ router.post("/:jobId/applications", requireAuth, async (req, res) => {
   const parsed = ApplyToJobBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "Invalid input" }); return; }
 
+  const userId = req.session!.userId!;
+
+  const [existingApp] = await db.select().from(applicationsTable)
+    .where(and(eq(applicationsTable.jobId, jobId), eq(applicationsTable.freelancerId, userId)))
+    .limit(1);
+  if (existingApp) {
+    res.status(409).json({ error: "Already applied to this job" });
+    return;
+  }
+
   const [app] = await db.insert(applicationsTable)
-    .values({ ...parsed.data, jobId, freelancerId: req.session!.userId! })
+    .values({ ...parsed.data, jobId, freelancerId: userId })
     .returning();
 
   await db.update(jobsTable)

@@ -14,8 +14,14 @@ router.post("/", requireAuth, async (req, res) => {
   const { revieweeId, rating, comment } = parsed.data;
   if (rating < 1 || rating > 5) { res.status(400).json({ error: "Rating must be 1-5" }); return; }
 
+  const reviewerId = req.session!.userId!;
+  if (revieweeId === reviewerId) {
+    res.status(400).json({ error: "Cannot review yourself" });
+    return;
+  }
+
   const [review] = await db.insert(reviewsTable).values({
-    reviewerId: req.session!.userId!,
+    reviewerId,
     revieweeId,
     rating,
     comment: comment ?? null,
