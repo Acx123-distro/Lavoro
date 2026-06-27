@@ -81,17 +81,29 @@ router.patch("/:id", requireAuth, async (req, res) => {
   const parsed = UpdateJobBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "Invalid input" }); return; }
 
+  const [existing] = await db.select().from(jobsTable).where(eq(jobsTable.id, id)).limit(1);
+  if (!existing) { res.status(404).json({ error: "Job not found" }); return; }
+  if (existing.clientId !== req.session!.userId! && req.session!.role !== "admin") {
+    res.status(403).json({ error: "Forbidden" }); return;
+  }
+
   const [job] = await db.update(jobsTable)
     .set({ ...parsed.data, updatedAt: new Date() })
     .where(eq(jobsTable.id, id))
     .returning();
-  if (!job) { res.status(404).json({ error: "Job not found" }); return; }
   res.json(await buildJobResponse(job));
 });
 
 router.delete("/:id", requireAuth, async (req, res) => {
   const id = parseInt(req.params["id"] as string);
   if (isNaN(id)) { res.status(400).json({ error: "Invalid ID" }); return; }
+
+  const [existing] = await db.select().from(jobsTable).where(eq(jobsTable.id, id)).limit(1);
+  if (!existing) { res.status(404).json({ error: "Job not found" }); return; }
+  if (existing.clientId !== req.session!.userId! && req.session!.role !== "admin") {
+    res.status(403).json({ error: "Forbidden" }); return;
+  }
+
   await db.delete(jobsTable).where(eq(jobsTable.id, id));
   res.json({ success: true });
 });

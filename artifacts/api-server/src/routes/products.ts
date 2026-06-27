@@ -71,17 +71,29 @@ router.patch("/:id", requireAuth, async (req, res) => {
   const parsed = UpdateProductBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "Invalid input" }); return; }
 
+  const [existing] = await db.select().from(productsTable).where(eq(productsTable.id, id)).limit(1);
+  if (!existing) { res.status(404).json({ error: "Product not found" }); return; }
+  if (existing.sellerId !== req.session!.userId! && req.session!.role !== "admin") {
+    res.status(403).json({ error: "Forbidden" }); return;
+  }
+
   const [product] = await db.update(productsTable)
     .set({ ...parsed.data, updatedAt: new Date() })
     .where(eq(productsTable.id, id))
     .returning();
-  if (!product) { res.status(404).json({ error: "Product not found" }); return; }
   res.json(await buildProductResponse(product));
 });
 
 router.delete("/:id", requireAuth, async (req, res) => {
   const id = parseInt(req.params["id"] as string);
   if (isNaN(id)) { res.status(400).json({ error: "Invalid ID" }); return; }
+
+  const [existing] = await db.select().from(productsTable).where(eq(productsTable.id, id)).limit(1);
+  if (!existing) { res.status(404).json({ error: "Product not found" }); return; }
+  if (existing.sellerId !== req.session!.userId! && req.session!.role !== "admin") {
+    res.status(403).json({ error: "Forbidden" }); return;
+  }
+
   await db.delete(productsTable).where(eq(productsTable.id, id));
   res.json({ success: true });
 });
