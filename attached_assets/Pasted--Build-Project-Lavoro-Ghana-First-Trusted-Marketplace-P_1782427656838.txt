@@ -1,0 +1,323 @@
+# Build Project: Lavoro — Ghana First Trusted Marketplace (Phase 1 MVP)
+
+You are an expert full-stack developer. Build a scalable MVP web application called **Lavoro**.
+
+## Vision
+
+Lavoro is a Ghana-first trusted digital marketplace that connects:
+
+* Freelancers with clients
+* Businesses with workers
+* Sellers with buyers
+
+The platform is built around:
+
+**Trust + Verification + Reputation**
+
+The goal is to make it easy for people in Ghana to find reliable workers, jobs, and products.
+
+The platform should be mobile-first, simple, professional, and easy for non-technical users.
+
+---
+
+# PHASE 1 — BUILD NOW
+
+## 1. Authentication
+
+Create user registration and login.
+
+Users can register with:
+
+* Email
+* Password
+* Phone number
+* Google login if possible
+
+User roles:
+
+1. Freelancer
+2. Client
+3. Seller
+4. Admin
+
+Users should have different dashboards depending on their role.
+
+---
+
+# 2. Freelancer Profiles
+
+Create freelancer profiles containing:
+
+* Full name
+* Profile photo
+* Bio
+* Skills
+* Location
+* Portfolio section
+* Experience
+* Pricing:
+
+  * Hourly rate
+  * Project price
+* Completed jobs
+* Reviews
+* Rating score
+* Verification status
+
+Include Ghana identity verification as a future-ready field:
+
+* Ghana Card / National ID verification status
+
+---
+
+# 3. Client Profiles
+
+Clients can have:
+
+* Name
+* Profile photo/logo
+* Business name (optional)
+* Description
+* Location
+* Posted jobs
+* Reviews from freelancers
+* Rating score
+
+---
+
+# 4. Simple Job Marketplace
+
+Create a job posting system.
+
+The job posting process must be simple.
+
+A client should be able to post a job quickly.
+
+Required fields:
+
+* Job title
+* Description
+* Category
+* Budget (mandatory)
+* Location
+* Deadline
+
+Example:
+
+"I need a graphic designer"
+
+Budget:
+GHS 500
+
+Freelancers can:
+
+* Browse jobs
+* Apply
+* Send proposals
+* Chat with clients
+
+---
+
+# 5. Product Buy & Sell Marketplace
+
+Create a marketplace section.
+
+Sellers can create product listings:
+
+Required:
+
+* Product image
+* Product name
+* Description
+* Category
+* Price
+* Location
+* Quantity
+* Negotiable toggle:
+  YES / NO
+
+Buyers can:
+
+* Browse products
+* View seller profiles
+* Contact sellers
+* Purchase (basic placeholder flow)
+
+---
+
+# 6. Trust and Rating System (CORE FEATURE)
+
+Build a two-way rating system.
+
+After interaction:
+
+Clients rate freelancers.
+
+Freelancers rate clients.
+
+Buyers rate sellers.
+
+Sellers rate buyers.
+
+Ratings should include:
+
+* Star rating
+* Written review
+
+Profiles should display:
+
+* Average rating
+* Number of reviews
+* Completed jobs/sales
+
+---
+
+# 7. Reputation Visibility System
+
+Create the foundation for ranking.
+
+Higher-rated users should automatically receive better visibility.
+
+Example:
+
+A freelancer with:
+
+5-star rating
+50 completed jobs
+
+should rank higher than:
+
+3-star rating
+2 completed jobs
+
+Add labels:
+
+Positive:
+
+* Trusted Freelancer
+* Verified Seller
+
+Negative:
+
+* Low Trust
+* Poor History
+
+---
+
+# 8. Messaging System
+
+Create internal messaging.
+
+Users can communicate:
+
+* Freelancer ↔ Client
+* Buyer ↔ Seller
+
+Keep conversations inside Lavoro.
+
+---
+
+# 9. Admin Dashboard
+
+Create admin controls.
+
+Admin can:
+
+* View users
+* View jobs
+* View products
+* Manage reports
+* Suspend users
+* View basic statistics
+
+---
+
+# Design Requirements
+
+The design should feel:
+
+* Professional
+* Modern
+* African-inspired luxury
+* Similar simplicity to Fiverr
+* Similar professionalism to Upwork
+
+Important:
+
+Do not create a complicated interface.
+
+The average Ghanaian user should understand it easily.
+
+Mobile-first design.
+
+---
+
+# Database Structure
+
+Create a clean scalable database.
+
+Include:
+
+Users
+Profiles
+Jobs
+Applications
+Products
+Messages
+Reviews
+Ratings
+Reports
+
+---
+
+# PHASE 2 — PREPARE FOR FUTURE (DO NOT FULLY BUILD YET)
+
+Make the architecture ready for:
+
+1. Lavoro Secure Payments
+
+* Escrow system
+* Client protection
+* Freelancer protection
+
+2. Store Pages
+
+* Personal online stores
+* Unique store links
+* Product catalogs
+
+3. Foreign Job Opportunities
+
+* Paid access to international job listings
+
+4. Wholesale Hub
+
+* International suppliers
+* Bulk buying opportunities
+
+5. Subscription System
+
+* Premium badges
+* Increased visibility
+
+6. Advertising System
+
+* Featured freelancers
+* Featured products
+* Business promotions
+
+---
+
+# Development Rules
+
+* Build clean reusable code.
+* Keep features separated into modules.
+* Make the project easy to expand later.
+* Do not overcomplicate the first version.
+* Focus on a working MVP.
+
+The final result should allow a user to:
+
+Create an account → Build a profile → Post/find jobs → Sell/buy products → Communicate → Build reputation.
+
+Build Lavoro Phase 1 now.
